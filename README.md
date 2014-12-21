@@ -1,6 +1,8 @@
 # Hpack
 
-TODO: Write a gem description
+Ruby implementation of the HPACK (Header Compression for HTTP/2) standard.
+
+http://http2.github.io/http2-spec/compression.html
 
 ## Installation
 
@@ -18,7 +20,16 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+require 'hpack'
+
+io_stream = ... something which gives you IO object with data to be processed ...
+
+decoder = Hpack::Decoder.new
+decoder.decode io_stream do |header, value, metadata|
+  ...
+end
+```
 
 ## Contributing
 

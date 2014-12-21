@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Hpack::VERSION
   spec.authors       = ["Konstantin Burnaev"]
   spec.email         = ["kbourn@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{HPACK implementation for Ruby.}
+  spec.description   = """Ruby implementation of the HPACK (Header Compression for HTTP/2) standard available at http://http2.github.io/http2-spec/compression.html"""
+  spec.homepage      = "https://github.com/bkon/hpack"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
