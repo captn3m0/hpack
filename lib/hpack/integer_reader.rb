@@ -1,8 +1,9 @@
 module Hpack
   class IntegerReader
-    def read length: 7, input: nil, start_with: 0
+    def read length: 7, input: nil
+      header_byte = input.readbyte
       prefix_mask = 0xFF >> (8 - length)
-      result = start_with & prefix_mask
+      result = header_byte & prefix_mask
 
       return result if result != prefix_mask
 

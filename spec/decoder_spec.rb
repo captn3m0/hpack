@@ -309,4 +309,21 @@ would include '#{header}: #{value}' at position #{position}"
     expect(subject.lookup_table)
       .to have_dynamic_entry_at_position(3, "date", "Mon, 21 Oct 2013 20:13:22 GMT")
   end
+
+  context "when indexed field has index value of 0" do
+    it "raises a decoding error" do
+      io = input_fixture "80"
+
+      expect { subject.decode io }.to raise_error Hpack::Decoder::ZeroIndexedFieldIndex
+    end
+  end
+
+  context "when input contains dynamic table size update directive" do
+    it "changes lookup table size limit" do
+      io = input_fixture "3E"
+
+      expect(subject.decode io).to eq []
+      expect(subject.lookup_table.max_size).to eq 30
+    end
+  end
 end
