@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/bkon/hpack.svg?branch=master)](https://travis-ci.org/bkon/hpack)
+[![Code Climate](https://codeclimate.com/github/bkon/hpack/badges/gpa.svg)](https://codeclimate.com/github/bkon/hpack)
+[![Test Coverage](https://codeclimate.com/github/bkon/hpack/badges/coverage.svg)](https://codeclimate.com/github/bkon/hpack)
+
 # Hpack
 
 Ruby implementation of the HPACK (Header Compression for HTTP/2) standard.

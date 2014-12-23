@@ -4,3 +4,6 @@ SimpleCov.start do
   coverage_dir "tmp/coverage/ruby"
   add_filter "/spec/"
 end
+
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
