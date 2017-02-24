@@ -5,5 +5,7 @@ SimpleCov.start do
   add_filter "/spec/"
 end
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+if ENV['CI'] == true
+	require "codeclimate-test-reporter"
+	CodeClimate::TestReporter.start
+end
