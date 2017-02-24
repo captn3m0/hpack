@@ -22,6 +22,14 @@ module Hpack
       def to_s
         "(s = %4d) %s: %s" % [size, name, value]
       end
+
+      def ===(entry)
+        @name == entry.name and @value == entry.value
+      end
+
+      def ==(entry)
+        @name == entry.name
+      end
     end
 
     SETTINGS_HEADER_TABLE_SIZE = 4096
@@ -108,6 +116,26 @@ module Hpack
 
         @dynamic_entries[dynamic_index]
       end
+    end
+
+    def max_valid_size
+      STATIC_TABLE_SIZE + size
+    end
+
+    # We return a index, entry itself
+    def lookup(key, value = '')
+      e = Entry.new key, value
+
+      for i in 1..max_valid_size
+        entry = self[i]
+        if entry === e
+          return [i, entry] 
+        elsif  entry == e
+          return [i, Entry.new(key)]
+        end
+      end
+
+      return [nil, '']
     end
 
     # 4.1 Calculating Table Size

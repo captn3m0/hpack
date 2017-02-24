@@ -16,6 +16,19 @@ RSpec.describe Hpack::LookupTable do
         expect(subject.to_s).to be_instance_of String
       end
     end
+
+    describe "equality" do
+      it "is identity" do
+        expect(subject == subject).to be true
+        expect(subject === subject).to be true
+      end
+
+      it "is strict" do
+        e = Hpack::LookupTable::Entry.new name
+        expect(subject == e).to be true
+        expect(subject === e).to be false
+      end
+    end
   end
 
   describe "#[]" do
@@ -23,6 +36,35 @@ RSpec.describe Hpack::LookupTable do
       it "raises an error" do
         expect { subject[Hpack::LookupTable::STATIC_TABLE_SIZE + 2] }
           .to raise_error Hpack::LookupTable::IndexOutOfBounds
+      end
+    end
+  end
+
+  describe "#lookup" do
+    subject { Hpack::LookupTable.new }
+    context "when table is in default state" do
+      it 'returns correct indexes for fullindex match' do
+        (index, value) = subject.lookup(':method', 'GET')
+        expect(index).to be 2
+        expect(value).to be_a Hpack::LookupTable::Entry
+        expect(value.name).to eq ':method'
+        expect(value.value).to eq 'GET'
+      end
+
+      it 'returns correct indexes for start keyindex match' do
+        (index, value) = subject.lookup(':authority')
+        expect(index).to be 1
+        expect(value).to be_a Hpack::LookupTable::Entry
+        expect(value.name).to eq ':authority'
+        expect(value.value).to eq ''
+      end
+
+      it 'returns correct indexes for end keyindex match' do
+        (index, value) = subject.lookup('www-authenticate')
+        expect(index).to be 61
+        expect(value).to be_a Hpack::LookupTable::Entry
+        expect(value.name).to eq 'www-authenticate'
+        expect(value.value).to eq ''
       end
     end
   end
