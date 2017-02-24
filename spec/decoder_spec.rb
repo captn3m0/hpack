@@ -1,3 +1,6 @@
+require 'json'
+require 'pp'
+
 RSpec.describe Hpack::Decoder do
   RSpec::Matchers.define :have_dynamic_entry_at_position do |position, header, value|
     match do |actual|
@@ -18,6 +21,10 @@ would include '#{header}: #{value}' at position #{position}"
     io.write [data.gsub(/\s/, "")].pack "H*"
     io.rewind
     io
+  end
+
+  def convert_headers_to_testcase(headers)
+    headers.map {|h| {h[0] => h[1]}}
   end
 
   it "properly decodes an example of a literal header field with indexing" do
@@ -308,6 +315,29 @@ would include '#{header}: #{value}' at position #{position}"
       .to have_dynamic_entry_at_position(2, "content-encoding", "gzip")
     expect(subject.lookup_table)
       .to have_dynamic_entry_at_position(3, "date", "Mon, 21 Oct 2013 20:13:22 GMT")
+  end
+
+  context 'when dealing with external encoders' do
+    IMPLEMENTATIONS = [
+      'go-hpack', 'haskell-http2-linear', 'haskell-http2-linear-huffman', 'haskell-http2-naive',
+      'haskell-http2-naive-huffman', 'haskell-http2-static', 'haskell-http2-static-huffman',
+      'nghttp2', 'nghttp2-16384-4096', 'nghttp2-change-table-size', 'node-http2-hpack',
+      'python-hpack'
+    ]
+    for impl in IMPLEMENTATIONS
+      it "properly decodes the hpack-test-case/#{impl} entirely" do
+        for story_index in 0..31
+          story_index = story_index.to_s.rjust(2, '0')
+          story = JSON.parse File.read "./spec/hpack-test-case/#{impl}/story_#{story_index}.json"
+          story['cases'].each do |set|
+            io = input_fixture set['wire']
+            headers = subject.decode io
+            h = convert_headers_to_testcase headers
+            expect(h).to eq(set['headers'])
+          end
+        end
+      end
+    end
   end
 
   context "when indexed field has index value of 0" do

@@ -1,4 +1,3 @@
 --color
---require simplecov
 --require hpack
 --require spec_helper
