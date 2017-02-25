@@ -42,7 +42,7 @@ RSpec.describe Hpack::LookupTable do
 
   describe "#lookup" do
     subject { Hpack::LookupTable.new }
-    context "when table is in default state" do
+    context "when dynamic table is empty" do
       it 'returns correct indexes for fullindex match' do
         (index, value) = subject.lookup(':method', 'GET')
         expect(index).to be 2
@@ -65,6 +65,20 @@ RSpec.describe Hpack::LookupTable do
         expect(value).to be_a Hpack::LookupTable::Entry
         expect(value.name).to eq 'www-authenticate'
         expect(value.value).to eq ''
+      end
+    end
+
+    context "when dynamic table is not empty" do
+      before do
+        subject << Hpack::LookupTable::Entry.new('header', 'value')
+      end
+
+      it 'returns the correct index' do
+        (index, value) = subject.lookup('header', 'value')
+        expect(index).to be 62
+        expect(value).to be_a Hpack::LookupTable::Entry
+        expect(value.name).to eq 'header'
+        expect(value.value).to eq 'value'
       end
     end
   end
